@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hello.pubg_stat.repository.mybatis.mapper.MemberStatMapper">
+    <select id="getAverageDealtByMapName" resultType="map">
+        SELECT
+            m.map_name,
+            AVG(s.dealt) AS average_dealt
+        FROM
+            STAT s
+        JOIN
+            PARTICIPANT p ON s.participant_id = p.participant_id
+        JOIN
+            MATCH m ON p.match_id = m.match_id
+        WHERE
+            s.name = #{name}
+        GROUP BY
+            m.map_name;
+    </select>
+
+
+</mapper>
