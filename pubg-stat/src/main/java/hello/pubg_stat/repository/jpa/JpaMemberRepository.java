@@ -47,6 +47,16 @@ public class JpaMemberRepository implements MemberRepository {
     }
 
     @Override
+    public Optional<Member> findByDiscordId(String discordId) {
+        String jpql = "SELECT m FROM Member m WHERE m.discordId = :discordId";
+
+        TypedQuery<Member> query = em.createQuery(jpql, Member.class);
+        query.setParameter("discordId", discordId);
+        Member member = query.getResultStream().findFirst().orElse(null);
+        return Optional.ofNullable(member);
+    }
+
+    @Override
     public List<Member> findMemberAll() {
         // JPQL 쿼리 작성: 모든 Member 엔티티를 선택
         String jpql = "SELECT m FROM Member m";

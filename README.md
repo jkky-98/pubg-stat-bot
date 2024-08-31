@@ -28,3 +28,7 @@ logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE
 mybatis.type-aliases-package=hello.itemservice.domain
 mybatis.configuration.map-underscore-to-camel-case=true
 logging.level.hello.itemservice.repository.mybatis=trace
+
+# 기능
+* 팀 멤버 등록 가능 최대 9명(현재 비즈니스 API를 사용하지 않는다고 가정)
+* 스텟 저장 스케줄러 작동

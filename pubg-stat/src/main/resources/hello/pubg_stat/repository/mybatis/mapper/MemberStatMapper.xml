@@ -17,6 +17,37 @@
         GROUP BY
             m.map_name;
     </select>
-
+    <resultMap id="StatResultMap" type="hello.pubg_stat.repository.dto.AllStatDto">
+        <result property="teamMateCount" column="TEAM_MATE_COUNT"/>
+        <result property="mapName" column="MAP_NAME"/>
+        <result property="firstDeathRatio" column="First_death_ratio"/>
+        <result property="teamTopTenRatio" column="TEAM_TOP_TEN_ratio"/>
+        <result property="teamWinRatio" column="TEAM_WIN_ratio"/>
+        <result property="avgRevives" column="avg_revives"/>
+        <result property="avgDealt" column="avg_DEALT"/>
+        <result property="avgDbnos" column="avg_DBNOS"/>
+    </resultMap>
+    <select id="getAllStat" resultMap="StatResultMap">
+        SELECT
+        s.TEAM_MATE_COUNT,
+        m.MAP_NAME,
+        -- First_death 비율
+        ROUND(SUM(CASE WHEN s.First_death THEN 1 ELSE 0 END) * 1.0 / COUNT(*), 3) AS First_death_ratio,
+        -- TEAM_TOP_TEN 비율
+        ROUND(SUM(CASE WHEN s.TEAM_TOP_TEN THEN 1 ELSE 0 END) * 1.0 / COUNT(*), 3) AS TEAM_TOP_TEN_ratio,
+        -- TEAM_WIN 비율
+        ROUND(SUM(CASE WHEN s.TEAM_WIN THEN 1 ELSE 0 END) * 1.0 / COUNT(*), 3) AS TEAM_WIN_ratio,
+        -- revives 평균
+        ROUND(AVG(s.revives), 3) AS avg_revives,
+        -- DEALT 평균
+        ROUND(AVG(s.DEALT), 3) AS avg_DEALT,
+        -- DBNOS 평균
+        ROUND(AVG(s.DBNOS), 3) AS avg_DBNOS
+        FROM STAT s
+        JOIN Participant p ON s.PLAYER_ID = p.PLAYER_ID
+        JOIN MATCH m ON p.Match_ID = m.Match_ID
+        GROUP BY s.TEAM_MATE_COUNT, m.MAP_NAME
+        HAVING COUNT(*) > 0;
+    </select>
 
 </mapper>

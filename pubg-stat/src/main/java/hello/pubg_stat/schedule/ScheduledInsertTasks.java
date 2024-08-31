@@ -13,8 +13,8 @@ public class ScheduledInsertTasks {
 
     private final MatchForSchedule matchForSchedule;
 
-//    @Scheduled(fixedRate = 6000)
-//    public void apiInsertTasks() {
-//        matchForSchedule.analysisMatchSchedule();
-//    }
+    @Scheduled(fixedRate = 10000)
+    public void apiInsertTasks() {
+        matchForSchedule.analysisMatchSchedule(); 
+    }
 }

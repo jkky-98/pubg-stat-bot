@@ -1,5 +1,7 @@
 package hello.pubg_stat.util;
 
+import hello.pubg_stat.domain.Member;
+import hello.pubg_stat.repository.MemberRepository;
 import hello.pubg_stat.service.discord.message.MessageService;
 import hello.pubg_stat.service.discord.table.TableSender;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +12,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -17,8 +22,10 @@ public class TestDiscordListener extends ListenerAdapter {
 
     @Autowired private MessageService messageService;
     @Autowired private TableSender tableSender;
+    @Autowired private MemberRepository memberRepository;
 
     @Override
+    @Transactional
     public void onMessageReceived(MessageReceivedEvent event) {
         User user = event.getAuthor();
         TextChannel textChannel = event.getChannel().asTextChannel();
@@ -33,9 +40,15 @@ public class TestDiscordListener extends ListenerAdapter {
         }
 
         String messageString = message.getContentDisplay();
+        String discordId = user.getName();
+
+        Optional<Member> byDiscordId = memberRepository.findByDiscordId(discordId);
+        Member member = byDiscordId.get();
+        String userName = member.getUserName();
 
         switch (messageString) {
-            case "딜량" : tableSender.sendTable(textChannel, messageService.getDealt(user.getName()));
+            case "딜량" : tableSender.sendTableGetDealt(textChannel, messageService.getDealt(user.getName()), userName);
+            case "전체" : tableSender.sendAllStatResults(textChannel, messageService.getAllStat());
         }
 
     }

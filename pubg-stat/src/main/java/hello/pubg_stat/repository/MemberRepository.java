@@ -13,4 +13,6 @@ public interface MemberRepository {
     Optional<Member> findByAccountId(String accountId);
 
     List<Member> findMemberAll();
+
+    Optional<Member> findByDiscordId(String discordId);
 }
